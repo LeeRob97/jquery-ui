@@ -49,6 +49,7 @@ $.widget( "ui.draggable", $.ui.mouse, {
 		connectToSortable: false,
 		containment: false,
 		cursor: "auto",
+		scale: 1,
 		cursorAt: false,
 		grid: false,
 		handle: false,
@@ -712,7 +713,7 @@ $.widget( "ui.draggable", $.ui.mouse, {
 				( this.cssPosition === "fixed" ?
 					-this.offset.scroll.top :
 					( scrollIsRootNode ? 0 : this.offset.scroll.top ) )
-			),
+			) * o.scale,
 			left: (
 
 				// The absolute mouse position
@@ -729,7 +730,7 @@ $.widget( "ui.draggable", $.ui.mouse, {
 				( this.cssPosition === "fixed" ?
 					-this.offset.scroll.left :
 					( scrollIsRootNode ? 0 : this.offset.scroll.left ) )
-			)
+			) * o.scale
 		};
 
 	},

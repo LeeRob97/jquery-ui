@@ -13,6 +13,7 @@ common.testWidget( "draggable", {
 		containment: false,
 		cursor: "auto",
 		cursorAt: false,
+		scale: 1,
 		disabled: false,
 		grid: false,
 		handle: false,
