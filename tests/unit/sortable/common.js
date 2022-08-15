@@ -11,6 +11,7 @@ common.testWidget( "sortable", {
 		classes: {},
 		connectWith: false,
 		containment: false,
+		scale: 1,
 		cursor: "auto",
 		cursorAt: false,
 		delay: 0,

@@ -46,6 +46,7 @@ return $.widget( "ui.sortable", $.ui.mouse, {
 		axis: false,
 		connectWith: false,
 		containment: false,
+		scale: 1,
 		cursor: "auto",
 		cursorAt: false,
 		dropOnEmpty: true,
@@ -446,6 +447,7 @@ return $.widget( "ui.sortable", $.ui.mouse, {
 			item = this.items[ i ];
 			itemElement = item.item[ 0 ];
 			intersection = this._intersectsWithPointer( item );
+
 			if ( !intersection ) {
 				continue;
 			}
@@ -852,6 +854,7 @@ return $.widget( "ui.sortable", $.ui.mouse, {
 	},
 
 	_refreshItemPositions: function( fast ) {
+		var scale = this.options.scale;
 		var i, item, t, p;
 
 		for ( i = this.items.length - 1; i >= 0; i-- ) {
@@ -1417,7 +1420,7 @@ return $.widget( "ui.sortable", $.ui.mouse, {
 				( ( this.cssPosition === "fixed" ?
 					-this.scrollParent.scrollTop() :
 					( scrollIsRootNode ? 0 : scroll.scrollTop() ) ) )
-			),
+			) * o.scale,
 			left: (
 
 				// The absolute mouse position
@@ -1434,7 +1437,7 @@ return $.widget( "ui.sortable", $.ui.mouse, {
 				( ( this.cssPosition === "fixed" ?
 					-this.scrollParent.scrollLeft() :
 					scrollIsRootNode ? 0 : scroll.scrollLeft() ) )
-			)
+			) * o.scale
 		};
 
 	},
