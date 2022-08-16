@@ -222,12 +222,12 @@ return $.widget( "ui.sortable", $.ui.mouse, {
 		this.offset = this.currentItem.offset();
 		this.offset = {
 			top: this.offset.top - this.margins.top,
-			left: this.offset.left - this.margins.left
+			left: ( this.offset.left - this.margins.left ) * o.scale
 		};
 
 		$.extend( this.offset, {
 			click: { //Where the click happened, relative to the element
-				left: event.pageX - this.offset.left,
+				left: ( event.pageX * o.scale )- this.offset.left,
 				top: event.pageY - this.offset.top
 			},
 
@@ -876,8 +876,8 @@ return $.widget( "ui.sortable", $.ui.mouse, {
 			}
 
 			p = t.offset();
-			item.left = p.left;
-			item.top = p.top;
+			item.left = p.left * scale;
+			item.top = p.top * scale;
 		}
 	},
 
@@ -903,7 +903,7 @@ return $.widget( "ui.sortable", $.ui.mouse, {
 		} else {
 			for ( i = this.containers.length - 1; i >= 0; i-- ) {
 				p = this.containers[ i ].element.offset();
-				this.containers[ i ].containerCache.left = p.left;
+				this.containers[ i ].containerCache.left = p.left * this.options.scale;
 				this.containers[ i ].containerCache.top = p.top;
 				this.containers[ i ].containerCache.width =
 					this.containers[ i ].element.outerWidth();
@@ -1074,7 +1074,7 @@ return $.widget( "ui.sortable", $.ui.mouse, {
 					continue;
 				}
 
-				cur = this.items[ j ].item.offset()[ posProperty ];
+				cur = this.items[ j ].item.offset()[ posProperty ] * this.options.scale;
 				nearBottom = false;
 				if ( event[ axis ] - cur > this.items[ j ][ sizeProperty ] / 2 ) {
 					nearBottom = true;
@@ -1209,8 +1209,8 @@ return $.widget( "ui.sortable", $.ui.mouse, {
 		}
 
 		return {
-			top: po.top + ( parseInt( this.offsetParent.css( "borderTopWidth" ), 10 ) || 0 ),
-			left: po.left + ( parseInt( this.offsetParent.css( "borderLeftWidth" ), 10 ) || 0 )
+			top: ( po.top + ( parseInt( this.offsetParent.css( "borderTopWidth" ), 10 ) || 0 ) ) * this.options.scale,
+			left: ( po.left + ( parseInt( this.offsetParent.css( "borderLeftWidth" ), 10 ) || 0 ) ) * this.options.scale
 		};
 
 	},
@@ -1290,7 +1290,7 @@ return $.widget( "ui.sortable", $.ui.mouse, {
 	},
 
 	_convertPositionTo: function( d, pos ) {
-
+		
 		if ( !pos ) {
 			pos = this.position;
 		}
@@ -1336,10 +1336,10 @@ return $.widget( "ui.sortable", $.ui.mouse, {
 	},
 
 	_generatePosition: function( event ) {
-
+		var o = this.options,
+			scaledPageX = ( event.pageX * o.scale );
 		var top, left,
-			o = this.options,
-			pageX = event.pageX,
+			pageX = scaledPageX ,
 			pageY = event.pageY,
 			scroll = this.cssPosition === "absolute" &&
 				!( this.scrollParent[ 0 ] !== this.document[ 0 ] &&
@@ -1365,13 +1365,13 @@ return $.widget( "ui.sortable", $.ui.mouse, {
 		if ( this.originalPosition ) { //If we are not dragging yet, we won't check for options
 
 			if ( this.containment ) {
-				if ( event.pageX - this.offset.click.left < this.containment[ 0 ] ) {
+				if ( scaledPageX  - this.offset.click.left < this.containment[ 0 ] ) {
 					pageX = this.containment[ 0 ] + this.offset.click.left;
 				}
 				if ( event.pageY - this.offset.click.top < this.containment[ 1 ] ) {
 					pageY = this.containment[ 1 ] + this.offset.click.top;
 				}
-				if ( event.pageX - this.offset.click.left > this.containment[ 2 ] ) {
+				if ( scaledPageX  - this.offset.click.left > this.containment[ 2 ] ) {
 					pageX = this.containment[ 2 ] + this.offset.click.left;
 				}
 				if ( event.pageY - this.offset.click.top > this.containment[ 3 ] ) {
@@ -1420,7 +1420,7 @@ return $.widget( "ui.sortable", $.ui.mouse, {
 				( ( this.cssPosition === "fixed" ?
 					-this.scrollParent.scrollTop() :
 					( scrollIsRootNode ? 0 : scroll.scrollTop() ) ) )
-			) * o.scale,
+			),
 			left: (
 
 				// The absolute mouse position
@@ -1437,7 +1437,7 @@ return $.widget( "ui.sortable", $.ui.mouse, {
 				( ( this.cssPosition === "fixed" ?
 					-this.scrollParent.scrollLeft() :
 					scrollIsRootNode ? 0 : scroll.scrollLeft() ) )
-			) * o.scale
+			)
 		};
 
 	},
