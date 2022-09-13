@@ -221,14 +221,14 @@ return $.widget( "ui.sortable", $.ui.mouse, {
 		//The element's absolute position on the page minus margins
 		this.offset = this.currentItem.offset();
 		this.offset = {
-			top: this.offset.top - this.margins.top,
+			top: ( this.offset.top - this.margins.top ) * o.scale,
 			left: ( this.offset.left - this.margins.left ) * o.scale
 		};
 
 		$.extend( this.offset, {
 			click: { //Where the click happened, relative to the element
-				left: ( event.pageX * o.scale )- this.offset.left,
-				top: event.pageY - this.offset.top
+				left: ( event.pageX * o.scale ) - this.offset.left,
+				top: ( event.pageY * o.scale ) - this.offset.top
 			},
 
 			// This is a relative to absolute position minus the actual position calculation -
@@ -904,7 +904,7 @@ return $.widget( "ui.sortable", $.ui.mouse, {
 			for ( i = this.containers.length - 1; i >= 0; i-- ) {
 				p = this.containers[ i ].element.offset();
 				this.containers[ i ].containerCache.left = p.left * this.options.scale;
-				this.containers[ i ].containerCache.top = p.top;
+				this.containers[ i ].containerCache.top = p.top * this.options.s;
 				this.containers[ i ].containerCache.width =
 					this.containers[ i ].element.outerWidth();
 				this.containers[ i ].containerCache.height =
@@ -1337,10 +1337,11 @@ return $.widget( "ui.sortable", $.ui.mouse, {
 
 	_generatePosition: function( event ) {
 		var o = this.options,
-			scaledPageX = ( event.pageX * o.scale );
+			scaledPageX = ( event.pageX * o.scale ),
+			scaledPageY = ( event.pageY * o.scale );
 		var top, left,
 			pageX = scaledPageX ,
-			pageY = event.pageY,
+			pageY = scaledPageY,
 			scroll = this.cssPosition === "absolute" &&
 				!( this.scrollParent[ 0 ] !== this.document[ 0 ] &&
 				$.contains( this.scrollParent[ 0 ], this.offsetParent[ 0 ] ) ) ?
@@ -1368,13 +1369,13 @@ return $.widget( "ui.sortable", $.ui.mouse, {
 				if ( scaledPageX  - this.offset.click.left < this.containment[ 0 ] ) {
 					pageX = this.containment[ 0 ] + this.offset.click.left;
 				}
-				if ( event.pageY - this.offset.click.top < this.containment[ 1 ] ) {
+				if ( scaledPageY - this.offset.click.top < this.containment[ 1 ] ) {
 					pageY = this.containment[ 1 ] + this.offset.click.top;
 				}
 				if ( scaledPageX  - this.offset.click.left > this.containment[ 2 ] ) {
 					pageX = this.containment[ 2 ] + this.offset.click.left;
 				}
-				if ( event.pageY - this.offset.click.top > this.containment[ 3 ] ) {
+				if ( scaledPageY - this.offset.click.top > this.containment[ 3 ] ) {
 					pageY = this.containment[ 3 ] + this.offset.click.top;
 				}
 			}
