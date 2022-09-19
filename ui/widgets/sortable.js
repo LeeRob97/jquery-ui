@@ -1271,6 +1271,9 @@ return $.widget( "ui.sortable", $.ui.mouse, {
 			co = $( o.containment ).offset();
 			over = ( $( ce ).css( "overflow" ) !== "hidden" );
 
+			co.top *= o.scale;
+			co.left *= o.scale;
+
 			this.containment = [
 				co.left + ( parseInt( $( ce ).css( "borderLeftWidth" ), 10 ) || 0 ) +
 					( parseInt( $( ce ).css( "paddingLeft" ), 10 ) || 0 ) - this.margins.left,
@@ -1290,7 +1293,6 @@ return $.widget( "ui.sortable", $.ui.mouse, {
 	},
 
 	_convertPositionTo: function( d, pos ) {
-		
 		if ( !pos ) {
 			pos = this.position;
 		}
