@@ -346,8 +346,8 @@ return $.widget( "ui.sortable", $.ui.mouse, {
 
 		//Generate the original position
 		this.position = this.originalPosition = this._generatePosition( event );
-		this.originalPageX = event.pageX;
-		this.originalPageY = event.pageY;
+		this.originalPageX = event.pageX * o.scale;
+		this.originalPageY = event.pageY * o.scale;
 		this.lastPositionAbs = this.positionAbs = this._convertPositionTo( "absolute" );
 
 		this._mouseDrag( event );
@@ -1187,6 +1187,9 @@ return $.widget( "ui.sortable", $.ui.mouse, {
 		this.offsetParent = this.helper.offsetParent();
 		var po = this.offsetParent.offset();
 
+		po.top *= this.options.scale;
+		po.left *= this.options.scale;
+
 		// This is a special case where we need to modify a offset calculated on start, since the
 		// following happened:
 		// 1. The position of the helper is absolute, so it's position is calculated based on the
@@ -1209,8 +1212,8 @@ return $.widget( "ui.sortable", $.ui.mouse, {
 		}
 
 		return {
-			top: ( po.top + ( parseInt( this.offsetParent.css( "borderTopWidth" ), 10 ) || 0 ) ) * this.options.scale,
-			left: ( po.left + ( parseInt( this.offsetParent.css( "borderLeftWidth" ), 10 ) || 0 ) ) * this.options.scale
+			top: po.top + ( parseInt( this.offsetParent.css( "borderTopWidth" ), 10 ) || 0 ),
+			left: po.left + ( parseInt( this.offsetParent.css( "borderLeftWidth" ), 10 ) || 0 )
 		};
 
 	},
@@ -1342,7 +1345,7 @@ return $.widget( "ui.sortable", $.ui.mouse, {
 			scaledPageX = ( event.pageX * o.scale ),
 			scaledPageY = ( event.pageY * o.scale );
 		var top, left,
-			pageX = scaledPageX ,
+			pageX = scaledPageX,
 			pageY = scaledPageY,
 			scroll = this.cssPosition === "absolute" &&
 				!( this.scrollParent[ 0 ] !== this.document[ 0 ] &&
